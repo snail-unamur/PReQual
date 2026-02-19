@@ -27,6 +27,12 @@ func (a *SonarQubeAnalyzer) AnalyzeProject(repoName string, path string) error {
 
 		targetDir := filepath.Join(path, zipName[:len(zipName)-4])
 
+		defer func() {
+			if err := os.RemoveAll(targetDir); err != nil {
+				fmt.Printf("Warning: could not remove %s: %v\n", targetDir, err)
+			}
+		}()
+
 		if err := helper.Unzip(zipPath, targetDir); err != nil {
 			return err
 		}
