@@ -5,6 +5,7 @@ Idées de chose à faire :
 - réfléchir à la stratégie de visualisation
 - réfléchir à la stratégie d'analyse (réfléchir aux métriques qu'on veut)
 - système de résilience pour les PR qui échouent à l'extraction
-- outil pour visualiser le dataset (eg: git graph) -> historique
+- outil pour visualiser le dataset (eg: git graph) -> historique -> voir discussions Teams
+- 
 - try catch quand limite CLI attent
 - savoir si related to issue

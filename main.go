@@ -3,16 +3,20 @@ package main
 import (
 	"PReQual/client"
 	"PReQual/helper"
+	"PReQual/metric"
 	"fmt"
+	"strings"
 )
 
 const workspace = "tmp"
+const repo = "ReViSE-EuroSpaceCenter/ReViSE-backend"
 
 func main() {
-	repo := "sipeed/picoclaw"
-
 	var prClient client.PullRequestClient
 	prClient = &client.GhClient{}
+
+	var analyzer metric.ProjectAnalyser
+	analyzer = &metric.SonarQubeAnalyzer{}
 
 	prs, err := prClient.GetPullRequests(repo)
 	if err != nil {
@@ -33,5 +37,13 @@ func main() {
 		}
 
 		helper.WriteMetaDataFile(path, pr)
+
+		formattedRepo := strings.Replace(repo, "/", "-", -1)
+
+		err := analyzer.AnalyzeProject(formattedRepo, path)
+		if err != nil {
+			fmt.Printf("Error analyzing pull requests: %v\n", err)
+			return
+		}
 	}
 }

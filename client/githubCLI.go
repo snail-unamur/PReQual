@@ -7,17 +7,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
+	"strconv"
 )
 
 type GhClient struct{}
+
+const limit = 1000
+const data = "number,title,baseRefOid,headRefOid,state,createdAt,closedAt,comments,body,closingIssuesReferences"
 
 func (c *GhClient) GetPullRequests(repo string) ([]model.PullRequest, error) {
 	args := []string{
 		"pr", "list",
 		"-R", repo,
 		"--state", "all",
-		"--limit", "1000",
-		"--json", "number,title,baseRefOid,headRefOid,state,createdAt,closedAt,comments,body,closingIssuesReferences",
+		"--limit", strconv.Itoa(limit),
+		"--json", data,
 	}
 
 	output, err := c.runGh(args)
