@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func WriteSonarMeasuresJSON(path string, m model.SonarMeasures) {
+func WriteSonarMeasuresJSON(path string, fileName string, m model.SonarMeasures) {
 	sonarData := convertMeasuresToMap(m)
 
 	data, err := json.MarshalIndent(sonarData, "", "  ")
@@ -16,7 +16,7 @@ func WriteSonarMeasuresJSON(path string, m model.SonarMeasures) {
 		panic(err)
 	}
 
-	filePath := filepath.Join(path, "report.json")
+	filePath := filepath.Join(path, fileName+".json")
 	err = os.WriteFile(filePath, data, 0644)
 	if err != nil {
 		panic(err)

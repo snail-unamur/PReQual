@@ -66,7 +66,7 @@ func (a *SonarQubeAnalyzer) AnalyzeProject(repoName string, path string, metrics
 			return err
 		}
 
-		helper.WriteSonarMeasuresJSON(path, data)
+		helper.WriteSonarMeasuresJSON(path, projectName, data)
 
 	}
 
