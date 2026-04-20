@@ -108,28 +108,28 @@ func processPR(
 	if err := prClient.RetrieveBranchZip(repoKey, pr.HeadRefOid, path, headFileName); err != nil {
 		return err
 	}
-	baseFileName := fmt.Sprintf("base_%s.zip", pr.BaseRefOid)
-	if err := prClient.RetrieveBranchZip(repoKey, pr.BaseRefOid, path, baseFileName); err != nil {
+	mergeBaseFileName := fmt.Sprintf("merge_base_%s.zip", pr.MergeBaseCommit)
+	if err := prClient.RetrieveBranchZip(repoKey, pr.MergeBaseCommit, path, mergeBaseFileName); err != nil {
 		return err
 	}
 
-	archivePath := fmt.Sprintf("%s/%s", path, headFileName)
-	headMetrics, err := analyzer.AnalyzeProjectBranch("head", pr.Id, repoKey, archivePath, metrics)
+	archiveHeadPath := fmt.Sprintf("%s/%s", path, headFileName)
+	headMetrics, err := analyzer.AnalyzeProjectBranch("head", pr.Id, repoKey, archiveHeadPath, metrics)
 	if err != nil {
 		return err
 	}
-	archivePath = fmt.Sprintf("%s/%s", path, baseFileName)
-	baseMetrics, err := analyzer.AnalyzeProjectBranch("base", pr.Id, repoKey, archivePath, metrics)
+	archiveMergeBasePath := fmt.Sprintf("%s/%s", path, mergeBaseFileName)
+	mergeBaseMetrics, err := analyzer.AnalyzeProjectBranch("mergeBase", pr.Id, repoKey, archiveMergeBasePath, metrics)
 	if err != nil {
 		return err
 	}
 
 	stats := model.AnalysisStat{
-		TotalTime: int(time.Since(start).Seconds()),
-		BaseSize:  helper.FormatSizeRounded([]string{path + "/base.zip"}),
-		HeadSize:  helper.FormatSizeRounded([]string{path + "/head.zip"}),
+		TotalTime:     int(time.Since(start).Seconds()),
+		MergeBaseSize: helper.FormatSizeRounded([]string{archiveMergeBasePath}),
+		HeadSize:      helper.FormatSizeRounded([]string{archiveHeadPath}),
 	}
 
-	database.InsertPR(org, repo, pr, headMetrics, baseMetrics, stats)
+	database.InsertPR(org, repo, pr, headMetrics, mergeBaseMetrics, stats)
 	return nil
 }

@@ -64,7 +64,12 @@ func (c *GhClient) GetPullRequests(repo string) ([]model.PullRequest, error) {
 			continue
 		}
 
-		prs = append(prs, mapPRNodes(resp)...)
+		mappedPRs, err := c.mapPRNodes(resp, owner, name)
+		if err != nil {
+			return nil, err
+		}
+
+		prs = append(prs, mappedPRs...)
 
 		if !resp.Data.Repository.PullRequests.PageInfo.HasNextPage {
 			break
@@ -93,6 +98,25 @@ func (c *GhClient) fetchPullRequestPage(owner, name, cursor string) (*model.Pull
 	}
 
 	return &resp, nil
+}
+
+func (c *GhClient) RetrieveMergeCommitOid(owner, repo, base, head string) (string, error) {
+	url := fmt.Sprintf("repos/%s/%s/compare/%s...%s", owner, repo, base, head)
+
+	output, err := c.runGh([]string{
+		"api",
+		url,
+	})
+	if err != nil {
+		return "", err
+	}
+
+	var resp model.CompareResponse
+	if err := json.Unmarshal(output, &resp); err != nil {
+		return "", err
+	}
+
+	return resp.MergeBaseCommit.SHA, nil
 }
 
 func buildPRQuery(owner, name, cursor string) string {
@@ -128,24 +152,32 @@ func buildPRQuery(owner, name, cursor string) string {
 	}`, owner, name, formatCursor(cursor))
 }
 
-func mapPRNodes(resp *model.PullRequestResponse) []model.PullRequest {
+func (c *GhClient) mapPRNodes(resp *model.PullRequestResponse, owner, name string) ([]model.PullRequest, error) {
+
 	var prs []model.PullRequest
 
 	for _, n := range resp.Data.Repository.PullRequests.Nodes {
+
+		mergeBase, err := c.RetrieveMergeCommitOid(owner, name, n.BaseRefOid, n.HeadRefOid)
+		if err != nil {
+			return nil, err
+		}
+
 		prs = append(prs, model.PullRequest{
-			Id:           n.ID,
-			Number:       n.Number,
-			Title:        n.Title,
-			Body:         n.Body,
-			State:        n.State,
-			CreatedAt:    n.CreatedAt,
-			ClosedAt:     deref(n.ClosedAt),
-			MergedAt:     deref(n.MergedAt),
-			Additions:    n.Additions,
-			Deletions:    n.Deletions,
-			ChangedFiles: n.ChangedFiles,
-			BaseRefOid:   n.BaseRefOid,
-			HeadRefOid:   n.HeadRefOid,
+			Id:              n.ID,
+			Number:          n.Number,
+			Title:           n.Title,
+			Body:            n.Body,
+			State:           n.State,
+			CreatedAt:       n.CreatedAt,
+			ClosedAt:        deref(n.ClosedAt),
+			MergedAt:        deref(n.MergedAt),
+			Additions:       n.Additions,
+			Deletions:       n.Deletions,
+			ChangedFiles:    n.ChangedFiles,
+			BaseRefOid:      n.BaseRefOid,
+			HeadRefOid:      n.HeadRefOid,
+			MergeBaseCommit: mergeBase,
 			Author: model.Author{
 				Login: n.Author.Login,
 			},
@@ -154,7 +186,7 @@ func mapPRNodes(resp *model.PullRequestResponse) []model.PullRequest {
 		})
 	}
 
-	return prs
+	return prs, nil
 }
 
 func (c *GhClient) GetRateLimit() (*model.RateLimitResponse, error) {

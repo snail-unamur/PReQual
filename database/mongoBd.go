@@ -26,7 +26,7 @@ func InitMongoDB(uri string) *mongo.Client {
 	return mongoClient
 }
 
-func InsertPR(org string, repo string, pr model.PullRequest, headMetrics map[string]interface{}, baseMetrics map[string]interface{}, stats model.AnalysisStat) {
+func InsertPR(org string, repo string, pr model.PullRequest, headMetrics map[string]interface{}, mergeBaseMetrics map[string]interface{}, stats model.AnalysisStat) {
 	if mongoClient == nil {
 		panic("MongoDB client is not initialized. Call InitMongoDB first.")
 	}
@@ -61,14 +61,14 @@ func InsertPR(org string, repo string, pr model.PullRequest, headMetrics map[str
 			"additions":     pr.Additions,
 			"deletions":     pr.Deletions,
 		},
-		"head":     headMetrics,
-		"base":     baseMetrics,
-		"comments": comments,
-		"reviews":  reviews,
+		"head":       headMetrics,
+		"merge_base": mergeBaseMetrics,
+		"comments":   comments,
+		"reviews":    reviews,
 		"stats": bson.M{
-			"total_time": stats.TotalTime,
-			"base_size":  stats.BaseSize,
-			"head_size":  stats.HeadSize,
+			"total_time":      stats.TotalTime,
+			"merge_base_size": stats.MergeBaseSize,
+			"head_size":       stats.HeadSize,
 		},
 		"analysed_at": time.Now(),
 	}
