@@ -35,7 +35,9 @@ RUN apk add --no-cache \
     bash \
     ca-certificates \
     github-cli \
-    docker-cli \
+    docker-cli
+
+RUN apk add --no-cache ca-certificates
 
 COPY --from=builder /app/prequal /usr/local/bin/prequal
 
