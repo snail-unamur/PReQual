@@ -1,8 +1,8 @@
 package client
 
 import (
-	domain "PReQual/internal/domain"
-	helper "PReQual/internal/helper"
+	"PReQual/internal/domain"
+	"PReQual/internal/helper"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -45,6 +45,7 @@ func (c *GhClient) switchToken() {
 	c.Current = (c.Current + 1) % len(c.Tokens)
 	os.Setenv("GH_TOKEN", c.Tokens[c.Current])
 }
+
 func (c *GhClient) GetPullRequests(repo string) ([]domain.PullRequest, error) {
 	owner, name, err := helper.SplitRepo(repo)
 	if err != nil {

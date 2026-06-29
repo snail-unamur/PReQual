@@ -1,7 +1,7 @@
 package database
 
 import (
-	model2 "PReQual/internal/domain"
+	"PReQual/internal/domain"
 	"context"
 	"fmt"
 	"log"
@@ -25,7 +25,7 @@ func InitMongoDB(uri string) *mongo.Client {
 	return mongoClient
 }
 
-func InsertPR(org string, repo string, pr model2.PullRequest, headMetrics map[string]interface{}, mergeBaseMetrics map[string]interface{}, stats model2.AnalysisStat) {
+func InsertPR(org string, repo string, pr domain.PullRequest, headMetrics map[string]interface{}, mergeBaseMetrics map[string]interface{}, stats domain.AnalysisStat) {
 	if mongoClient == nil {
 		panic("MongoDB client is not initialized. Call InitMongoDB first.")
 	}
@@ -83,7 +83,7 @@ func InsertPR(org string, repo string, pr model2.PullRequest, headMetrics map[st
 	}
 }
 
-func formatReviews(pr model2.PullRequest) []bson.M {
+func formatReviews(pr domain.PullRequest) []bson.M {
 	reviews := []bson.M{}
 
 	for _, r := range pr.Reviews {
@@ -101,7 +101,7 @@ func formatReviews(pr model2.PullRequest) []bson.M {
 	return reviews
 }
 
-func formatComments(pr model2.PullRequest) []bson.M {
+func formatComments(pr domain.PullRequest) []bson.M {
 	comments := []bson.M{}
 
 	for _, c := range pr.Comments {

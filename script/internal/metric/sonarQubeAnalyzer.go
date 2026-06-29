@@ -1,9 +1,9 @@
 package metric
 
 import (
-	compilation2 "PReQual/internal/compilation"
+	"PReQual/internal/compilation"
 	"PReQual/internal/domain"
-	helper2 "PReQual/internal/helper"
+	"PReQual/internal/helper"
 	"fmt"
 	"os"
 	"os/exec"
@@ -26,7 +26,7 @@ func (a *SonarQubeAnalyzer) AnalyzeProjectBranch(
 
 	defer cleanupExtractedDir(archivePath)
 
-	compiler := compilation2.Compiler(&compilation2.PythonCompiler{})
+	compiler := compilation.Compiler(&compilation.PythonCompiler{})
 
 	return analyzeArchive(
 		branchType,
@@ -44,7 +44,7 @@ func analyzeArchive(
 	prID string,
 	repoName string,
 	metrics []string,
-	compiler compilation2.Compiler,
+	compiler compilation.Compiler,
 ) (map[string]interface{}, error) {
 
 	if _, err := os.Stat(archivePath); err != nil {
@@ -52,11 +52,11 @@ func analyzeArchive(
 	}
 
 	extractDir := strings.TrimSuffix(archivePath, ".zip")
-	if err := helper2.Unzip(archivePath, extractDir); err != nil {
+	if err := helper.Unzip(archivePath, extractDir); err != nil {
 		return nil, err
 	}
 
-	projectRoot, err := helper2.FindProjectRoot(extractDir)
+	projectRoot, err := helper.FindProjectRoot(extractDir)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func analyzeArchive(
 		return nil, err
 	}
 
-	return helper2.ConvertMeasuresToMap(measures), nil
+	return helper.ConvertMeasuresToMap(measures), nil
 }
 
 func buildProjectKey(repoName, prID, branchType string) string {
@@ -103,7 +103,7 @@ func waitForAnalysisCompletion(
 	timeout time.Duration,
 ) error {
 
-	client := helper2.NewHTTPClient(
+	client := helper.NewHTTPClient(
 		os.Getenv("SONAR_URL"),
 		os.Getenv("SONAR_TOKEN"),
 	)
@@ -128,7 +128,7 @@ func waitForAnalysisCompletion(
 			received := len(resp.Component.Measures)
 			expected := len(metrics)
 
-			fmt.Printf("📡 Sonar response: %d/%d metrics received\n", received, expected)
+			fmt.Printf("Sonar response: %d/%d metrics received\n", received, expected)
 
 			if received == expected {
 				return nil
@@ -150,6 +150,7 @@ func runSonarScanner(projectPath string) error {
 		"--network", os.Getenv("DOCKER_NET"),
 		"-v", absPath+":/usr/src",
 		"-e", "SONAR_TOKEN="+os.Getenv("SONAR_TOKEN"),
+		"-e", "SONAR_HOST_URL="+os.Getenv("SONAR_DOCKER_URL"),
 		"sonarsource/sonar-scanner-cli",
 	)
 
@@ -163,7 +164,7 @@ func retrieveSonarMetrics(
 	metrics []string,
 ) (domain.SonarMeasures, error) {
 
-	client := helper2.NewHTTPClient(
+	client := helper.NewHTTPClient(
 		os.Getenv("SONAR_URL"),
 		os.Getenv("SONAR_TOKEN"),
 	)

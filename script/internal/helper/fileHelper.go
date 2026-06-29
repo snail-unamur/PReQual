@@ -72,20 +72,7 @@ func FindProjectRoot(path string) (string, error) {
 		return path, err
 	}
 
-	var dirs []string
-	for _, e := range entries {
-		if e.IsDir() {
-			dirs = append(dirs, e.Name())
-		} else {
-			return path, nil
-		}
-	}
-
-	if len(dirs) == 1 {
-		return filepath.Join(path, dirs[0]), nil
-	}
-
-	return path, nil
+	return filepath.Join(path, entries[0].Name()), nil
 }
 
 func FormatSizeRounded(paths []string) int {

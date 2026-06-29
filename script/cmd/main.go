@@ -63,8 +63,7 @@ func processRepo(
 
 	fmt.Printf("\n===== Repo: %s =====\n", repoKey)
 
-	parts := strings.Split(repoKey, "/")
-	org, repo := parts[0], parts[1]
+	org, repo, err := helper.SplitRepo(repoKey)
 
 	prs, err := prClient.GetPullRequests(repoKey)
 	if err != nil {
