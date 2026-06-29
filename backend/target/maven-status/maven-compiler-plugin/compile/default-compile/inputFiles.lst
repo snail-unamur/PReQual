@@ -1,0 +1,13 @@
+/Users/fruityterminal/Projects/PReQual/backend/src/main/java/org/snail/prequalbackend/PrequalBackendApplication.java
+/Users/fruityterminal/Projects/PReQual/backend/src/main/java/org/snail/prequalbackend/config/CacheConfig.java
+/Users/fruityterminal/Projects/PReQual/backend/src/main/java/org/snail/prequalbackend/controller/PullRequestController.java
+/Users/fruityterminal/Projects/PReQual/backend/src/main/java/org/snail/prequalbackend/dto/PullRequestDTO.java
+/Users/fruityterminal/Projects/PReQual/backend/src/main/java/org/snail/prequalbackend/model/Author.java
+/Users/fruityterminal/Projects/PReQual/backend/src/main/java/org/snail/prequalbackend/model/Comment.java
+/Users/fruityterminal/Projects/PReQual/backend/src/main/java/org/snail/prequalbackend/model/Metadata.java
+/Users/fruityterminal/Projects/PReQual/backend/src/main/java/org/snail/prequalbackend/model/Metrics.java
+/Users/fruityterminal/Projects/PReQual/backend/src/main/java/org/snail/prequalbackend/model/PullRequest.java
+/Users/fruityterminal/Projects/PReQual/backend/src/main/java/org/snail/prequalbackend/model/Review.java
+/Users/fruityterminal/Projects/PReQual/backend/src/main/java/org/snail/prequalbackend/model/Stats.java
+/Users/fruityterminal/Projects/PReQual/backend/src/main/java/org/snail/prequalbackend/repository/PullRequestRepository.java
+/Users/fruityterminal/Projects/PReQual/backend/src/main/java/org/snail/prequalbackend/service/PullRequestService.java
