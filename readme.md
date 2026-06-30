@@ -13,7 +13,7 @@ The latest version of the dataset is available in a [Zenodo repository](https://
 The figure above shows the architecture of PReQual. It is composed of four main components:
 
 - **Script** (Go): orchestrates the analysis by querying GitHub Pull Requests through the **GitHub API** (GraphQL) and triggering static analyses.
-- **Analyse Statique** (SonarQube + SonarScanner): performs static code analysis on the head branch and the merge base branch of each pull request, computing metrics such as complexity, code smells, or duplicated lines.
+- **Static Analysis** (SonarQube + SonarScanner): performs static code analysis on the head branch and the merge base branch of each pull request, computing metrics such as complexity, code smells, or duplicated lines.
 - **Database** (MongoDB): stores the collected metrics and pull request data once the analysis is complete.
 - **API** (Java, Spring Boot): exposes a REST interface to query the resulting dataset.
 
