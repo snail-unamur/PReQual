@@ -139,6 +139,7 @@ func buildPRQuery(owner, name, cursor string) string {
 	        changedFiles
 	        baseRefOid
 	        headRefOid
+	        baseRef { name }
 	        author { login }
 	        comments(first: 100) {
 	          nodes { body createdAt author { login } }
@@ -178,6 +179,7 @@ func (c *GhClient) mapPRNodes(resp *domain.PullRequestResponse, owner, name stri
 			ChangedFiles:    n.ChangedFiles,
 			BaseRefOid:      n.BaseRefOid,
 			HeadRefOid:      n.HeadRefOid,
+			BaseRefName:     n.BaseRef.Name,
 			MergeBaseCommit: mergeBase,
 			Author: domain.Author{
 				Login: n.Author.Login,

@@ -19,6 +19,10 @@ type PullRequestResponse struct {
 					BaseRefOid   string
 					HeadRefOid   string
 
+					BaseRef struct {
+						Name string
+					}
+
 					Author struct {
 						Login string
 					}

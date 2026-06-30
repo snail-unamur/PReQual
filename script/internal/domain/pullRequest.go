@@ -7,6 +7,7 @@ type PullRequest struct {
 	Author          Author    `json:"author"`
 	Body            string    `json:"body"`
 	BaseRefOid      string    `json:"baseRefOid"`
+	BaseRefName     string    `json:"baseRefName"`
 	MergeBaseCommit string    `json:"mergeBaseCommit"`
 	HeadRefOid      string    `json:"headRefOid"`
 	CreatedAt       string    `json:"createdAt"`
